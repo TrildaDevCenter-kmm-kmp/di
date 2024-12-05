@@ -6,7 +6,7 @@
 A simple and lightweight runtime Dependency Injection (DI) container for Kotlin Multiplatform.
 Ivy DI is a small dependency injection library with an intuitive API and limited features.
 
-In a nutshell, you first register dependency factory functions in the container **Di.register { T() }** and then get instances via **Di.get\<T>()**.
+In a nutshell, you first register dependency factory functions in the container `Di.register { SomeClass() }` and then get instances via `Di.get<SomeClass>()`. It also supports auto-wiring via `autoWire(::SomeClass)` that does the registration for you.
 
 ```kotlin
 interface ArticlesDataSource
