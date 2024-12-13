@@ -175,10 +175,8 @@ object DataModule : Di.Module {
 
 Di.init(
   // Registers the following modules in the DI container
-  modules = setOf(
     AppModule,
     DataModule,
-  )
 )
 Di.get<LoginService>()
 ```
