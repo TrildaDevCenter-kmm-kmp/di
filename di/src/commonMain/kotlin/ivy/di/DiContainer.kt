@@ -111,6 +111,7 @@ object Di {
      * Each call to [get] will return a new instance using your registered factory.
      * If [T] is a [singleton], the same instance will be returned on subsequent calls.
      * @param named An optional qualifier to distinguish between multiple dependencies of the same type.
+     * @param affinity preferred scope in which to look for the dependency first
      * @throws DependencyInjectionError if no factory for [T] with qualifier [named] is registered.
      */
     @Throws(DependencyInjectionError::class)
@@ -188,7 +189,7 @@ object Di {
     }
 
     /**
-     * Clears all instances in the given [scope].
+     * Clears all instances in the given [Di.Scope].
      */
     fun clear(scope: Scope) {
         singletonInstances.keys.forEach { instanceKey ->
@@ -226,7 +227,7 @@ object Di {
     )
 
     /**
-     * DI scopes are used to group dependencies together and manage their lifecycle.
+     * Scopes are used to group dependencies together and manage their lifecycle.
      *
      * __Note:__ A dependency (class) can be registered into multiple scopes and its factory
      * will be picked based on affinity or scopes registration order.
