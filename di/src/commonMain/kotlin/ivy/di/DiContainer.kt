@@ -1,5 +1,6 @@
 package ivy.di
 
+import ivy.di.Di.Scope
 import kotlin.jvm.JvmInline
 import kotlin.reflect.KClass
 
@@ -92,9 +93,12 @@ object Di {
      * @throws DependencyInjectionError if no factory for [T] with qualifier [named] is registered.
      */
     @Throws(DependencyInjectionError::class)
-    inline fun <reified T : Any> getLazy(named: Any? = null): Lazy<T> {
+    inline fun <reified T : Any> getLazy(
+        named: Any? = null,
+        affinity: Scope? = null,
+    ): Lazy<T> {
         factoryOrThrow(T::class, named) // ensure that factory exists
-        return lazy { get<T>(named) }
+        return lazy { get<T>(named, affinity) }
     }
 
     /**
@@ -105,9 +109,14 @@ object Di {
      * @throws DependencyInjectionError if no factory for [T] with qualifier [named] is registered.
      */
     @Throws(DependencyInjectionError::class)
-    inline fun <reified T : Any> get(named: Any? = null): T {
+    inline fun <reified T : Any> get(
+        named: Any? = null,
+        affinity: Scope? = null,
+    ): T {
         val classKey = T::class
-        val (scope, factory) = factoryOrThrow(classKey, named)
+        val (scope, factory) =
+            affinity?.let { scopedFactoryOrNull(it, classKey, named) }
+                ?: factoryOrThrow(classKey, named)
         val depKey = DependencyKey(scope, classKey, named)
         return if (classKey in singletons) {
             if (depKey in singletonInstances) {
@@ -139,6 +148,15 @@ object Di {
             scopedFactoryOrNull(scope, classKey, named)
         } ?: throw DependencyInjectionError(diErrorMsg(classKey, named))
 
+    fun scopedFactoryOrNull(
+        scope: Scope,
+        classKey: KClass<*>,
+        named: Any?,
+    ): Pair<Scope, () -> Any>? = factories[DependencyKey(scope, classKey, named)]
+        ?.let { factory ->
+            scope to factory
+        }
+
     private fun diErrorMsg(classKey: KClass<*>, named: Any?): String = buildString {
         append("No factory")
         if (named != null) {
@@ -156,15 +174,6 @@ object Di {
         }
         append("\nDid you forget to register '$dependencyId' in Ivy DI?")
     }
-
-    private fun scopedFactoryOrNull(
-        scope: Scope,
-        classKey: KClass<*>,
-        named: Any?,
-    ): Pair<Scope, () -> Any>? = factories[DependencyKey(scope, classKey, named)]
-        ?.let { factory ->
-            scope to factory
-        }
 
     /**
      * Clears all instances in the given [scope].
@@ -213,6 +222,10 @@ object Di {
         fun init()
     }
 }
+
+inline fun <reified T : Any> Scope.get(
+    named: Any? = null,
+): T = Di.get(named, this)
 
 /**
  * An exception thrown when a factory for a dependency is not found in the DI container.
