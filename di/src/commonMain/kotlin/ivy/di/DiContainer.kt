@@ -200,7 +200,6 @@ object Di {
 
     /**
      * Resets the DI container by clearing all instances, singletons and factories.
-     * Note: [scopes] aren't clear for performance reasons.
      */
     fun reset() {
         singletonInstances.clear()
