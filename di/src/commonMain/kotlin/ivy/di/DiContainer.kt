@@ -91,6 +91,7 @@ object Di {
     /**
      * The same as [get] but returns a [Lazy] instance.
      * @param named An optional qualifier to distinguish between multiple dependencies of the same type.
+     * @param affinity preferred scope in which to look for the dependency first
      * @throws DependencyInjectionError if no factory for [T] with qualifier [named] is registered.
      */
     @Throws(DependencyInjectionError::class)
@@ -226,7 +227,23 @@ object Di {
     )
 
     /**
-     * A DI scope. Scopes are used to group dependencies and manage their lifecycle.
+     * DI scopes are used to group dependencies together and manage their lifecycle.
+     *
+     * __Note:__ A dependency (class) can be registered into multiple scopes and its factory
+     * will be picked based on affinity or scopes registration order.
+     *
+     * ```kotlin
+     * Di.appScope {
+     *   register { "hello" }
+     * }
+     * Di.featureScope {
+     *   register { "world" }
+     * }
+     *
+     * Di.get<String>(affinity = AppScope) // "hello"
+     * Di.get<String>(affinity = FeatureScope) // "world"
+     * Di.get<String>() // not deterministic
+     * ```
      */
     @JvmInline
     value class Scope internal constructor(val value: String)
