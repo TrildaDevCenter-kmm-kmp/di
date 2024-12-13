@@ -17,16 +17,12 @@ object Di {
     val singletonInstances = mutableMapOf<DependencyKey, Any>()
 
     /**
-     * Initializes a set of modules by calling their [Module.init] functions.
+     * Initializes [modules] by calling their [Module.init] functions.
+     * @param modules an array of modules to be initialized one by one
      */
-    fun init(modules: Set<Module>) {
-        modules.forEach(::init)
+    fun init(vararg modules: Module) {
+        modules.forEach(Module::init)
     }
-
-    /**
-     * Initializes a module by calling its [Module.init] function.
-     */
-    fun init(module: Module) = module.init()
 
     /**
      * Scope used to register dependencies for the entire lifetime of the application.

@@ -125,13 +125,22 @@ class DiContainerTest {
     @Test
     fun moduleRegistration() {
         // Given
-        Di.init(setOf(FakeDiModule))
+        Di.init(FakeDiModule)
 
         // When
         val instance = Di.get<FakeModuleDep>()
 
         // Then
         instance.shouldNotBeNull()
+    }
+
+    @Test
+    fun emptyModulesArrayInitialization() {
+        // When
+        Di.init()
+
+        // Then
+        // no crashes
     }
 
     @Test
