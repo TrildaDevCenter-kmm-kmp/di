@@ -151,8 +151,17 @@ class AffinityTest {
             register { "global" }
         }
         Di.featureScope {
-
+            register { "old" }
+            register { "new" }
         }
+
+        // When
+        val appScope = Di.get<String>(affinity = AppScope)
+        val featureScope = Di.get<String>(affinity = FeatureScope)
+
+        // Then
+        appScope shouldBe "global"
+        featureScope shouldBe "new"
     }
 
     data class ComplexScreen(val name: String, val int: Int)
