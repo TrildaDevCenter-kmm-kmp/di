@@ -144,6 +144,17 @@ class AffinityTest {
         )
     }
 
+    @Test
+    fun overwrites_dependency_with_affinity() {
+        // Give
+        Di.appScope {
+            register { "global" }
+        }
+        Di.featureScope {
+
+        }
+    }
+
     data class ComplexScreen(val name: String, val int: Int)
     data class Screen(val name: String)
 }

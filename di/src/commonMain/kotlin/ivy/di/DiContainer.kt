@@ -205,6 +205,10 @@ object Di {
         singletonInstances.clear()
         factories.clear()
         singletons.clear()
+
+        scopes.clear()
+        scopes.add(AppScope)
+        scopes.add(FeatureScope)
     }
 
     /**
