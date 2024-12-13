@@ -49,7 +49,7 @@ object Di {
     /**
      * Utility function for registering dependencies in a specific scope.
      */
-    fun scope(scope: Scope, block: Scope.() -> Unit) = scope.block()
+    fun inScope(scope: Scope, block: Scope.() -> Unit) = scope.block()
 
     /**
      * Registers a factory for a dependency [T].
@@ -98,7 +98,10 @@ object Di {
         named: Any? = null,
         affinity: Scope? = null,
     ): Lazy<T> {
-        factoryOrThrow(T::class, named) // ensure that factory exists
+        val classKey = T::class
+        // ensure that factory exists
+        affinity?.factoryOrNull(classKey, named)
+            ?: factoryOrThrow(classKey, named) // this will throw in case of null
         return lazy { get<T>(named, affinity) }
     }
 
@@ -115,9 +118,8 @@ object Di {
         affinity: Scope? = null,
     ): T {
         val classKey = T::class
-        val (scope, factory) =
-            affinity?.let { scopedFactoryOrNull(it, classKey, named) }
-                ?: factoryOrThrow(classKey, named)
+        val (scope, factory) = affinity?.factoryOrNull(classKey, named)
+            ?: factoryOrThrow(classKey, named)
         val depKey = DependencyKey(scope, classKey, named)
         return if (classKey in singletons) {
             if (depKey in singletonInstances) {
@@ -147,8 +149,14 @@ object Di {
         named: Any?,
     ): Pair<Scope, Factory> = scopes
         .firstNotNullOfOrNull { scope ->
-            scopedFactoryOrNull(scope, classKey, named)
+            scope.factoryOrNull(classKey, named)
         } ?: throw DependencyInjectionError(diErrorMsg(classKey, named))
+
+    @DiInternalApi
+    fun Scope.factoryOrNull(
+        classKey: KClass<*>,
+        named: Any?,
+    ): Pair<Scope, Factory>? = scopedFactoryOrNull(this, classKey, named)
 
     @DiInternalApi
     fun scopedFactoryOrNull(

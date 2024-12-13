@@ -52,10 +52,21 @@ class AffinityTest {
     }
 
     @Test
-    fun throws_for_not_registered_classes() {
+    fun get_throws_for_not_registered_classes() {
         // When
         val thrownException = shouldThrow<DependencyInjectionError> {
             Di.get<FakeStateHolder>(affinity = FeatureScope)
+        }
+
+        // Then
+        thrownException.message.shouldNotBeNull()
+    }
+
+    @Test
+    fun getLazy_throws_for_not_registered_classes() {
+        // When
+        val thrownException = shouldThrow<DependencyInjectionError> {
+            Di.getLazy<FakeStateHolder>(affinity = FeatureScope)
         }
 
         // Then
@@ -110,5 +121,29 @@ class AffinityTest {
         }
     }
 
+    @Test
+    fun builds_complex_screen() {
+        // Given
+        Di.appScope {
+            register<Int> { 42 }
+            register { "Global" }
+        }
+        val screenScope = Di.newScope("my-screen")
+        Di.inScope(screenScope) {
+            register { "My Screen" }
+            autoWire(::ComplexScreen)
+        }
+
+        // When
+        val screen = Di.get<ComplexScreen>(affinity = screenScope)
+
+        // Then
+        screen shouldBe ComplexScreen(
+            name = "My Screen",
+            int = 42,
+        )
+    }
+
+    data class ComplexScreen(val name: String, val int: Int)
     data class Screen(val name: String)
 }
