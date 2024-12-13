@@ -164,6 +164,30 @@ class AffinityTest {
         featureScope shouldBe "new"
     }
 
+    @Test
+    fun qualifiers_and_affinity() {
+        // Given
+        Di.appScope {
+            register(named = "1") { "a1" }
+            register(named = "2") { "a2" }
+        }
+        Di.featureScope {
+            register(named = "1") { "f1" }
+            register(named = "2") { "f2" }
+        }
+
+        // When
+        shouldThrow<DependencyInjectionError> {
+            Di.get<String>()
+        }
+
+        // Then
+        Di.get<String>(named = "1", affinity = AppScope) shouldBe "a1"
+        Di.get<String>(named = "2", affinity = AppScope) shouldBe "a2"
+        Di.get<String>(named = "1", affinity = FeatureScope) shouldBe "f1"
+        Di.get<String>(named = "2", affinity = FeatureScope) shouldBe "f2"
+    }
+
     data class ComplexScreen(val name: String, val int: Int)
     data class Screen(val name: String)
 }
