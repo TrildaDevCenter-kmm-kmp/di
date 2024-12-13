@@ -206,6 +206,7 @@ object Di {
         factories.clear()
         singletons.clear()
 
+        // Reset scopes to the default state
         scopes.clear()
         scopes.add(AppScope)
         scopes.add(FeatureScope)
@@ -230,6 +231,11 @@ object Di {
     @JvmInline
     value class Scope internal constructor(val value: String)
 
+    /**
+     * DI module that you can use to group and re-use dependency injection logic.
+     *
+     * _Tip: creating DI modules by layer (e.g. data, domain) or features (login, main) is a good idea!_
+     */
     interface Module {
         /**
          * Register your DI dependencies in this function.
