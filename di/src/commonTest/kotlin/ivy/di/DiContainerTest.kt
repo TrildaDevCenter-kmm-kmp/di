@@ -123,7 +123,7 @@ class DiContainerTest {
     }
 
     @Test
-    fun moduleRegistration() {
+    fun module_registration() {
         // Given
         Di.init(FakeDiModule)
 
@@ -135,7 +135,7 @@ class DiContainerTest {
     }
 
     @Test
-    fun emptyModulesArrayInitialization() {
+    fun modules_init_empty_modules() {
         // When
         Di.init()
 
