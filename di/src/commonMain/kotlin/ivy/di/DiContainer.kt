@@ -135,6 +135,7 @@ object Di {
      * Returns a factory for a dependency identified by [classKey] and [named].
      * @throws DependencyInjectionError if no factory is registered.
      */
+    @DiInternalApi
     @Throws(DependencyInjectionError::class)
     fun factoryOrThrow(
         classKey: KClass<*>,
@@ -144,6 +145,7 @@ object Di {
             scopedFactoryOrNull(scope, classKey, named)
         } ?: throw DependencyInjectionError(diErrorMsg(classKey, named))
 
+    @DiInternalApi
     fun scopedFactoryOrNull(
         scope: Scope,
         classKey: KClass<*>,
@@ -227,3 +229,8 @@ inline fun <reified T : Any> Scope.get(
  * An exception thrown when a factory for a dependency is not found in the DI container.
  */
 class DependencyInjectionError(msg: String) : IllegalStateException(msg)
+
+/**
+ * Internal API, please don't use it.
+ */
+annotation class DiInternalApi
