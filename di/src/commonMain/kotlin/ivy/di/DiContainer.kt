@@ -12,8 +12,13 @@ val FeatureScope = Di.newScope("feature")
 object Di {
     private val scopes = mutableSetOf<Scope>()
 
+    @DiInternalApi
     val factories = mutableMapOf<DependencyKey, Factory>()
+
+    @DiInternalApi
     val singletons = mutableSetOf<KClass<*>>()
+
+    @DiInternalApi
     val singletonInstances = mutableMapOf<DependencyKey, Any>()
 
     /**
