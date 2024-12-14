@@ -127,10 +127,19 @@ Di.appScope {
     autoWireSingleton(::B) // for singletons
     autoWire(::C)
 }
-Di.get<C>()
+Di.get<C>() // instance of C created
 ```
 
-To avoid repetitive code like `register { C(Di.get(), Di.get()) }` it's recommended to use auto-wiring.
+To avoid repetitive code like `register { C(Di.get(), Di.get()) }`
+it's recommended to use auto-wiring.
+
+> ![TIP]
+> **Always auto-wire**
+> When possible always use auto-wiring and fallback to
+> register/singleton only when absolutely necessary.
+>
+> This way you won't have to modify the register factories
+> when you change the constructor of the dependency that's being auto-wired.
 
 ### 5. Bindings
 
