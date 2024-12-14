@@ -136,9 +136,13 @@ class D(val a: A, val b: B, val c: C)
 
 Di.appScope {
   autoWire(::A)
+  // equivalent to register { A() }
   autoWireSingleton(::B) // for singletons
+  // equivalent to singleton { B(a = Di.get()) }
   autoWire(::C)
+  // equivalent to register { C(Di.get(), Di.get()) }
   autoWire(::D)
+  // equivalent to register { D(Di.get(), Di.get(), Di.get()) }
 }
 Di.get<D>() // instance of D created
 ```
