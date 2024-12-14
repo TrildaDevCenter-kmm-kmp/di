@@ -116,8 +116,8 @@ Di.appScope {
 }
 
 println(Di.get<Counter>().x) // Counter created. 0
-Di.get<Counter>().x = 42
-println(Di.get<Counter>().x) // 42
+Di.get<Counter>().x++
+println(Di.get<Counter>().x) // 1
 ```
 
 Singleton dependencies will have only one **single instance**
