@@ -12,7 +12,10 @@ automatically for you.
 
 ```kotlin
 interface ArticlesDataSource
-class RemoteArticlesDataSource(val client: HttpClient, val baseUrl: BaseUrlProvider)
+class RemoteArticlesDataSource(
+  val client: HttpClient,
+  val baseUrl: BaseUrlProvider
+) : ArticlesDataSource
 class ArticlesRepository(val source: ArticlesDataSource)
 
 Di.appScope {
