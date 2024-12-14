@@ -6,7 +6,16 @@ import kotlin.reflect.KClass
 
 typealias Factory = () -> Any
 
+/**
+ * Built-in [Di.Scope] for registering dependencies for the lifetime of the application.
+ * __Note:__ you need to manually manage the lifecycle by clearing when no longer needed
+ * via [Di.clear].
+ */
 val AppScope = Di.newScope("app")
+
+/**
+ * Same like [AppScope] but for the lifetime of a feature.
+ */
 val FeatureScope = Di.newScope("feature")
 
 object Di {
@@ -30,12 +39,14 @@ object Di {
   }
 
   /**
-   * Scope used to register dependencies for the entire lifetime of the application.
+   * Scope used to register dependencies in [AppScope],
+   * intended for the entire lifetime of the application.
    */
   fun appScope(block: Scope.() -> Unit) = AppScope.block()
 
   /**
-   * Scope used to register dependencies for a feature.
+   * Scope used to register dependencies in [FeatureScope]
+   * intended for the lifetime of the feature for a feature.
    */
   fun featureScope(block: Scope.() -> Unit) = FeatureScope.block()
 
@@ -47,7 +58,8 @@ object Di {
   fun newScope(name: String): Scope = Scope(name).also(scopes::add)
 
   /**
-   * Utility function for registering dependencies in a specific scope.
+   * Utility function for registering dependencies in a specific [scope].
+   * @param scope the [Di.Scope] in which the dependencies will be registered
    */
   fun inScope(scope: Scope, block: Scope.() -> Unit) = scope.block()
 
@@ -243,6 +255,37 @@ object Di {
    * Di.get<String>(affinity = AppScope) // "hello"
    * Di.get<String>(affinity = FeatureScope) // "world"
    * Di.get<String>() // not deterministic
+   * ```
+   *
+   * An example for managing lifecycle using DI scopes:
+   *
+   * ```kotlin
+   * data class UserInfo(val id: String, val name: String)
+   *
+   * val UserScope = Di.newScope("user")
+   * fun Di.userScope(block: Di.Scope.() -> Unit) = Di.inScope(UserScope, block) // helper function (optional)
+   *
+   * suspend fun login() {
+   *   val userInfo = loginInternally() // UserInfo("1", "John")
+   *   Di.userScope {
+   *     // Register dependencies for the lifecycle of a user
+   *     singleton { userInfo }
+   *   }
+   * }
+   *
+   * // Note: This function must be called only for logged-in users,
+   * // otherwise Di.get() will throw an exception.
+   * suspend fun dashboard() {
+   *   // Use user related dependencies
+   *   val userInfo = Di.get<UserInfo>()
+   *   println("Hello, ${userInfo.name}") // "Hello, John"
+   * }
+   *
+   * suspend fun logout() {
+   *   logoutInternally()
+   *   // Frees all dependencies in UserScope
+   *   Di.clear(UserScope) // UserInfo("1", "John") gets cleared
+   * }
    * ```
    */
   @JvmInline
