@@ -123,9 +123,9 @@ class DiContainerTest {
     }
 
     @Test
-    fun moduleRegistration() {
+    fun module_registration() {
         // Given
-        Di.init(setOf(FakeDiModule))
+        Di.init(FakeDiModule)
 
         // When
         val instance = Di.get<FakeModuleDep>()
@@ -135,12 +135,21 @@ class DiContainerTest {
     }
 
     @Test
+    fun modules_init_empty_modules() {
+        // When
+        Di.init()
+
+        // Then
+        // no crashes
+    }
+
+    @Test
     fun create_DI_scope() {
         // Given
         val customScope = Di.newScope("new")
 
         // When
-        Di.scope(customScope) {
+        Di.inScope(customScope) {
             register { FakeStateHolder() }
         }
         val instance = Di.get<FakeStateHolder>()

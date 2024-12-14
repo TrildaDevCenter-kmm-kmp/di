@@ -1,5 +1,6 @@
 package ivy.di
 
+import ivy.di.Di.Scope
 import kotlin.jvm.JvmInline
 import kotlin.reflect.KClass
 
@@ -11,21 +12,22 @@ val FeatureScope = Di.newScope("feature")
 object Di {
     private val scopes = mutableSetOf<Scope>()
 
+    @DiInternalApi
     val factories = mutableMapOf<DependencyKey, Factory>()
+
+    @DiInternalApi
     val singletons = mutableSetOf<KClass<*>>()
+
+    @DiInternalApi
     val singletonInstances = mutableMapOf<DependencyKey, Any>()
 
     /**
-     * Initializes a set of modules by calling their [Module.init] functions.
+     * Initializes [modules] by calling their [Module.init] functions.
+     * @param modules an array of modules to be initialized one by one
      */
-    fun init(modules: Set<Module>) {
-        modules.forEach(::init)
+    fun init(vararg modules: Module) {
+        modules.forEach(Module::init)
     }
-
-    /**
-     * Initializes a module by calling its [Module.init] function.
-     */
-    fun init(module: Module) = module.init()
 
     /**
      * Scope used to register dependencies for the entire lifetime of the application.
@@ -47,7 +49,7 @@ object Di {
     /**
      * Utility function for registering dependencies in a specific scope.
      */
-    fun scope(scope: Scope, block: Scope.() -> Unit) = scope.block()
+    fun inScope(scope: Scope, block: Scope.() -> Unit) = scope.block()
 
     /**
      * Registers a factory for a dependency [T].
@@ -89,12 +91,19 @@ object Di {
     /**
      * The same as [get] but returns a [Lazy] instance.
      * @param named An optional qualifier to distinguish between multiple dependencies of the same type.
+     * @param affinity preferred scope in which to look for the dependency first
      * @throws DependencyInjectionError if no factory for [T] with qualifier [named] is registered.
      */
     @Throws(DependencyInjectionError::class)
-    inline fun <reified T : Any> getLazy(named: Any? = null): Lazy<T> {
-        factoryOrThrow(T::class, named) // ensure that factory exists
-        return lazy { get<T>(named) }
+    inline fun <reified T : Any> getLazy(
+        named: Any? = null,
+        affinity: Scope? = null,
+    ): Lazy<T> {
+        val classKey = T::class
+        // ensure that factory exists
+        affinity?.factoryOrNull(classKey, named)
+            ?: factoryOrThrow(classKey, named) // this will throw in case of null
+        return lazy { get<T>(named, affinity) }
     }
 
     /**
@@ -102,12 +111,17 @@ object Di {
      * Each call to [get] will return a new instance using your registered factory.
      * If [T] is a [singleton], the same instance will be returned on subsequent calls.
      * @param named An optional qualifier to distinguish between multiple dependencies of the same type.
+     * @param affinity preferred scope in which to look for the dependency first
      * @throws DependencyInjectionError if no factory for [T] with qualifier [named] is registered.
      */
     @Throws(DependencyInjectionError::class)
-    inline fun <reified T : Any> get(named: Any? = null): T {
+    inline fun <reified T : Any> get(
+        named: Any? = null,
+        affinity: Scope? = null,
+    ): T {
         val classKey = T::class
-        val (scope, factory) = factoryOrThrow(classKey, named)
+        val (scope, factory) = affinity?.factoryOrNull(classKey, named)
+            ?: factoryOrThrow(classKey, named)
         val depKey = DependencyKey(scope, classKey, named)
         return if (classKey in singletons) {
             if (depKey in singletonInstances) {
@@ -130,14 +144,31 @@ object Di {
      * Returns a factory for a dependency identified by [classKey] and [named].
      * @throws DependencyInjectionError if no factory is registered.
      */
+    @DiInternalApi
     @Throws(DependencyInjectionError::class)
     fun factoryOrThrow(
         classKey: KClass<*>,
         named: Any?,
     ): Pair<Scope, Factory> = scopes
         .firstNotNullOfOrNull { scope ->
-            scopedFactoryOrNull(scope, classKey, named)
+            scope.factoryOrNull(classKey, named)
         } ?: throw DependencyInjectionError(diErrorMsg(classKey, named))
+
+    @DiInternalApi
+    fun Scope.factoryOrNull(
+        classKey: KClass<*>,
+        named: Any?,
+    ): Pair<Scope, Factory>? = scopedFactoryOrNull(this, classKey, named)
+
+    @DiInternalApi
+    fun scopedFactoryOrNull(
+        scope: Scope,
+        classKey: KClass<*>,
+        named: Any?,
+    ): Pair<Scope, () -> Any>? = factories[DependencyKey(scope, classKey, named)]
+        ?.let { factory ->
+            scope to factory
+        }
 
     private fun diErrorMsg(classKey: KClass<*>, named: Any?): String = buildString {
         append("No factory")
@@ -157,17 +188,8 @@ object Di {
         append("\nDid you forget to register '$dependencyId' in Ivy DI?")
     }
 
-    private fun scopedFactoryOrNull(
-        scope: Scope,
-        classKey: KClass<*>,
-        named: Any?,
-    ): Pair<Scope, () -> Any>? = factories[DependencyKey(scope, classKey, named)]
-        ?.let { factory ->
-            scope to factory
-        }
-
     /**
-     * Clears all instances in the given [scope].
+     * Clears all instances in the given [Di.Scope].
      */
     fun clear(scope: Scope) {
         singletonInstances.keys.forEach { instanceKey ->
@@ -179,12 +201,16 @@ object Di {
 
     /**
      * Resets the DI container by clearing all instances, singletons and factories.
-     * Note: [scopes] aren't clear for performance reasons.
      */
     fun reset() {
         singletonInstances.clear()
         factories.clear()
         singletons.clear()
+
+        // Reset scopes to the default state
+        scopes.clear()
+        scopes.add(AppScope)
+        scopes.add(FeatureScope)
     }
 
     /**
@@ -201,11 +227,32 @@ object Di {
     )
 
     /**
-     * A DI scope. Scopes are used to group dependencies and manage their lifecycle.
+     * Scopes are used to group dependencies together and manage their lifecycle.
+     *
+     * __Note:__ A dependency (class) can be registered into multiple scopes and its factory
+     * will be picked based on affinity or scopes registration order.
+     *
+     * ```kotlin
+     * Di.appScope {
+     *   register { "hello" }
+     * }
+     * Di.featureScope {
+     *   register { "world" }
+     * }
+     *
+     * Di.get<String>(affinity = AppScope) // "hello"
+     * Di.get<String>(affinity = FeatureScope) // "world"
+     * Di.get<String>() // not deterministic
+     * ```
      */
     @JvmInline
     value class Scope internal constructor(val value: String)
 
+    /**
+     * DI module that you can use to group and re-use dependency injection logic.
+     *
+     * _Tip: creating DI modules by layer (e.g. data, domain) or features (login, main) is a good idea!_
+     */
     interface Module {
         /**
          * Register your DI dependencies in this function.
@@ -215,6 +262,19 @@ object Di {
 }
 
 /**
+ * Same as [Di.get] but with affinity set to the receiver [Di.Scope] - [this].
+ * Read **[Di.get]**.
+ */
+inline fun <reified T : Any> Scope.get(
+    named: Any? = null,
+): T = Di.get(named, this)
+
+/**
  * An exception thrown when a factory for a dependency is not found in the DI container.
  */
 class DependencyInjectionError(msg: String) : IllegalStateException(msg)
+
+/**
+ * Internal API, please don't use it.
+ */
+annotation class DiInternalApi
