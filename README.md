@@ -233,10 +233,9 @@ To encapsulate and re-use DI logic you can create `Di.Module`.
 To activate the DI module you need to call `Di.init(MyModule)`.
 
 > [!TIP]
-> On each layer or feature, you can create a `di` package
-> in which you can define the DI modules. Then in your
+> On each  architecture layer or feature layer, you can create a `di` package with DI modules inside. Then in your
 > application root or feature entrypoint,
-> `Di.init()` all modules that you need to use.
+> call `Di.init(ModuleA, ModuleB, ...)` with all modules that you need to use.
 
 ## Advanced Usage
 
