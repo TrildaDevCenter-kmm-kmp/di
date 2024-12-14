@@ -248,7 +248,8 @@ suspend fun login() {
   }
 }
 
-// Note: This function must be called only for logged-in users, otherwise Di.get() will throw an exception.
+// Note: This function must be called only for logged-in users,
+// otherwise Di.get() will throw an exception.
 suspend fun dashboard() {
   // Use user related dependencies
   val userInfo = Di.get<UserInfo>()
