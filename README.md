@@ -73,7 +73,7 @@ class B(val a: A)
 
 Di.appScope {
     register { A() }
-    register { B(a = Di.get() }
+    register { B(a = Di.get()) }
 }
 ```
 
@@ -87,28 +87,33 @@ Di.get<B>() // instance 1 of B
 Di.get<B>() // instance 2 of B
 ```
 
-Each call to `Di.get()` creates a new instance for non-singleton dependencies.
+Each call to `Di.get()` creates a **new** instance for non-singleton dependencies.
 
 ### 3. Singleton dependencies
 
 ```kotlin
-class Counter(var x = 0) {
+class Counter(var x: Int = 0) {
     init {
         print("Counter created. ")
     }
-    Di.appScope
-    {
-        singleton {
-            Counter() // instance won't be created here 
-        }
-    }
+}
 
-    println(Di.get<Counter>().x) // Counter created. 0
-    Di.get<Counter>.x = 42
-    println(Di.get<Counter>().x) // 42
+Di.appScope {
+    singleton {
+        Counter() // instance won't be created here 
+    }
+}
+
+println(Di.get<Counter>().x) // Counter created. 0
+Di.get<Counter>().x = 42
+println(Di.get<Counter>().x) // 42
 ```
 
-Singleton dependencies will have only one **single instance** that will be created on the first `Di.get()` call.
+Singleton dependencies will have only one **single instance**
+that will be created on the first `Di.get()` call.
+
+To clear singleton instance and free memory use `Di.clear(scope)`.
+For example, to clear the counter - `Di.clear(AppScope)`.
 
 ### 4. Auto-wiring
 
