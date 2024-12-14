@@ -6,7 +6,9 @@
 A simple and lightweight runtime Dependency Injection (DI) container for Kotlin Multiplatform.
 Ivy DI is a small dependency injection library with an intuitive API and limited features.
 
-In a nutshell, you first register dependency factory functions in the container `Di.register { SomeClass() }` and then get instances via `Di.get<SomeClass>()`. It also supports auto-wiring via `autoWire(::SomeClass)` that does it automatically for you.
+In a nutshell, you first register dependency factory functions in the container `Di.register { SomeClass() }` and then
+get instances via `Di.get<SomeClass>()`. It also supports auto-wiring via `autoWire(::SomeClass)` that does it
+automatically for you.
 
 ```kotlin
 interface ArticlesDataSource
@@ -14,11 +16,11 @@ class RemoteArticlesDataSource(val client: HttpClient, val baseUrl: BaseUrlProvi
 class ArticlesRepository(val source: ArticlesDataSource)
 
 Di.appScope {
-  register { BaseUrlProvider("https://ivy-apps.com") }
-  singleton { HttpClient(CIO) }
-  autoWire(::RemoteArticlesDataSource)
-  bind<ArticlesDataSource, RemoteArticlesDataSource>()
-  autoWireSingleton(::ArticlesRepository)
+    register { BaseUrlProvider("https://ivy-apps.com") }
+    singleton { HttpClient(CIO) }
+    autoWire(::RemoteArticlesDataSource)
+    bind<ArticlesDataSource, RemoteArticlesDataSource>()
+    autoWireSingleton(::ArticlesRepository)
 }
 
 val repo = Di.get<ArticlesRepository>() // ArticlesRepository instance created
@@ -43,9 +45,11 @@ val repo = Di.get<ArticlesRepository>() // ArticlesRepository instance created
 
 You can find Ivy DI in [our Ivy DI Maven Central repository](https://central.sonatype.com/artifact/com.ivy-apps/di).
 
-Replace "?.?.?" with: [![Maven Central Version](https://img.shields.io/maven-central/v/com.ivy-apps/di)](https://central.sonatype.com/artifact/com.ivy-apps/di)
+Replace "?.?.?"
+with: [![Maven Central Version](https://img.shields.io/maven-central/v/com.ivy-apps/di)](https://central.sonatype.com/artifact/com.ivy-apps/di)
 
 **Gradle (Kotlin)**
+
 ```gradle
 implementation("com.ivy-apps:di:?.?.?")
 ```
@@ -53,6 +57,7 @@ implementation("com.ivy-apps:di:?.?.?")
 or
 
 **Version Catalog**
+
 ```toml
 [libraries]
 ivyApps-di = { module = "com.ivy-apps:di", version = "?.?.?" }
@@ -67,8 +72,8 @@ class A
 class B(val a: A)
 
 Di.appScope {
-  register { A() }
-  register { B(a = Di.get() }
+    register { A() }
+    register { B(a = Di.get() }
 }
 ```
 
@@ -88,17 +93,19 @@ Each call to `Di.get()` creates a new instance for non-singleton dependencies.
 
 ```kotlin
 class Counter(var x = 0) {
-  init { print("Counter created. ")
-}
-Di.appScope {
-  singleton {
-    Counter() // instance won't be created here 
-  }
-}
+    init {
+        print("Counter created. ")
+    }
+    Di.appScope
+    {
+        singleton {
+            Counter() // instance won't be created here 
+        }
+    }
 
-println(Di.get<Counter>().x) // Counter created. 0
-Di.get<Counter>.x = 42
-println(Di.get<Counter>().x) // 42
+    println(Di.get<Counter>().x) // Counter created. 0
+    Di.get<Counter>.x = 42
+    println(Di.get<Counter>().x) // 42
 ```
 
 Singleton dependencies will have only one **single instance** that will be created on the first `Di.get()` call.
@@ -111,9 +118,9 @@ class B(val a: A)
 class C(val a: A, val b: B)
 
 Di.appScope {
-  autoWire(::A)
-  autoWireSingleton(::B) // for singletons
-  autoWire(::C)
+    autoWire(::A)
+    autoWireSingleton(::B) // for singletons
+    autoWire(::C)
 }
 Di.get<C>()
 ```
@@ -127,15 +134,16 @@ interface Platform
 class AndroidPlatform : Platform
 
 Di.appScope {
-  autoWire(::AndroidPlatform)
-  bind<Platform, AndroidPlatform>()
-  // equivalent to:
-  // register<Platform> { AndroidPlatform() }
+    autoWire(::AndroidPlatform)
+    bind<Platform, AndroidPlatform>()
+    // equivalent to:
+    // register<Platform> { AndroidPlatform() }
 }
 Di.get<Platform>() // AndroidPlatform instance
 ```
 
-To bind a specific implementation to an interface (or an abstract class) use `bind<Interface, Impl>()`. Note: `Impl` must be registered in the dependency graph.
+To bind a specific implementation to an interface (or an abstract class) use `bind<Interface, Impl>()`. Note: `Impl`
+must be registered in the dependency graph.
 
 ### 6. Named dependencies (qualifiers)
 
@@ -145,18 +153,19 @@ class H24TimeFormatter : TimeFormatter
 class AmPmTimeFormatter : TimeFormatter
 
 Di.appScope {
-  autoWire(::H24TimeFormatter)
-  autoWire(::AmPmTimeFormatter)
-  bind<TimeFormatter, H24TimeFormatter>() // default
-  bind<TimeFormatter, AmPmTimeFormatter>(named = "am-pm")
+    autoWire(::H24TimeFormatter)
+    autoWire(::AmPmTimeFormatter)
+    bind<TimeFormatter, H24TimeFormatter>() // default
+    bind<TimeFormatter, AmPmTimeFormatter>(named = "am-pm")
 }
 
 Di.get<TimeFormatter>() // H24TimeFormatter
 Di.get<TimeFormatter>(named = "am-pm") // AmPmTimeFormatter
 ```
 
-Sometimes we need to have different instances of the same type. 
-To achieve this in Ivy DI, we can set qualifiers using `named = "something"` (you're not limited only to strings because `named: Any`).
+Sometimes we need to have different instances of the same type.
+To achieve this in Ivy DI, we can set qualifiers using `named = "something"` (you're not limited only to strings because
+`named: Any`).
 
 > [!IMPORTANT]
 > Your "named" qualifiers must support equality checks (hashCode + equals).
@@ -165,16 +174,16 @@ To achieve this in Ivy DI, we can set qualifiers using `named = "something"` (yo
 
 ```kotlin
 object DataModule : Di.Module {
-  override fun init() = Di.appScope {
-    singleton { HttpClient(CIO) }
-    register { Json() }
-    autoWire(::LoginService)
-    autoWireSingleton(::AnalyticsService)
-  }
+    override fun init() = Di.appScope {
+        singleton { HttpClient(CIO) }
+        register { Json() }
+        autoWire(::LoginService)
+        autoWireSingleton(::AnalyticsService)
+    }
 }
 
 Di.init(
-  // Registers the following modules in the DI container
+    // Registers the following modules in the DI container
     AppModule,
     DataModule,
 )
@@ -198,24 +207,24 @@ val UserScope = Di.newScope("user")
 fun Di.userScope(block: Di.Scope.() -> Unit) = Di.inScope(UserScope, block) // helper function (optional)
 
 suspend fun login() {
-  val userInfo = loginInternally() // UserInfo("1", "John")
-  Di.userScope {
-    // Register dependencies for the lifecycle of a user
-    singleton { userInfo }
-  }
+    val userInfo = loginInternally() // UserInfo("1", "John")
+    Di.userScope {
+        // Register dependencies for the lifecycle of a user
+        singleton { userInfo }
+    }
 }
 
 // Note: This function must be called only for logged-in users, otherwise Di.get() will throw an exception.
 suspend fun dashboard() {
-  // Use user related dependencies
-  val userInfo = Di.get<UserInfo>()
-  println("Hello, ${userInfo.name}") // "Hello, John"
+    // Use user related dependencies
+    val userInfo = Di.get<UserInfo>()
+    println("Hello, ${userInfo.name}") // "Hello, John"
 }
 
 suspend fun logout() {
-  logoutInternally()
-  // Frees all dependencies in UserScope
-  Di.clear(UserScope) // UserInfo("1", "John") gets cleared
+    logoutInternally()
+    // Frees all dependencies in UserScope
+    Di.clear(UserScope) // UserInfo("1", "John") gets cleared
 }
 ```
 
@@ -245,6 +254,7 @@ Currently not supported, investigating this use-case and whether we can support 
 
 > [!WARNING]
 > So far, we haven't found a nice and efficient solution.
+> Currently, multi-bindings are not on the roadmap.
 
 ### 3. Lazy initialization
 
@@ -254,19 +264,19 @@ You can do that by wrapping your dependency in `Lazy<T>` and using `Di.getLazy<T
 
 ```kotlin
 class ArticlesDataSource(val client: Lazy<HttpClient>) {
-  suspend fun fetchLatest(): List<Article> = client.value.get("url") // .value gets an instance of the HttpClient
+    suspend fun fetchLatest(): List<Article> = client.value.get("url") // .value gets an instance of the HttpClient
 }
 class ArticlesRepository(val source: ArticlesDataSource) {
-  suspend fun fetchLatest(): List<Article> = source.fetchLatest()
+    suspend fun fetchLatest(): List<Article> = source.fetchLatest()
 }
 
 Di.appScope {
-  singleton { HttpClient(CIO) }
-  register {
-    // autoWire won't work because you need to explicitly call Di.getLazy() instead of Di.get()
-    ArticlesDataSource(Di.getLazy())
-  }
-  autoWire(::ArticlesRepository)
+    singleton { HttpClient(CIO) }
+    register {
+        // autoWire won't work because you need to explicitly call Di.getLazy() instead of Di.get()
+        ArticlesDataSource(Di.getLazy())
+    }
+    autoWire(::ArticlesRepository)
 }
 val repo = Di.get<ArticlesRepository>() // HttpClient instance not created
 repo.fetchLatest() // HttpClient instance created
@@ -278,15 +288,58 @@ The instance of `HttpClient` will be created only after the `ArticlesDataSource#
 
 ### Generics aren't fully supported
 
-To avoid performance and compatibility problems we limit reflection to the bare minimum. 
-Ivy DI uses only `KClass<*>` which unfortunately doesn't make a difference between the generic type of a class.
+To avoid performance and compatibility problems we limit reflection to the bare minimum.
+Ivy DI uses only `KClass<*>` which unfortunately doesn't make a difference between the generic type of the class.
 
-For example, if you register a factory for `Container<A>` and `Container<B>`, KClass will both treat them as just `Container`.
-As an implication, only the factory for `Container<B>` will be registered, and `Di.get<Container<A>>()` will throw an exception.
+For example:
+
+```kotlin
+class Container<T>(val value: T)
+
+Di.appScope {
+    register {
+        // perceived as Container<*>, information for the Int generic type is lost
+        Container<Int>(42)
+    }
+    register { Container<String>("hello") } // will override the factory for Container<Int>
+}
+
+val intContainer = Di.get<Container<Int>>() // Container<String>("hello") instance created.
+intContainer.value // "hello" (String) even tough we requested Container<Int>!
+val x = intContainer.value + 1 // ClassCastException: class java.lang.String cannot be cast to class java.lang.Number
+Di.get<Container<String>>() // Container<String>("hello") instance created
+```
+
+This is very weird and have some nasty implications that break type-safety.
+
+To overcome this `KClass` limitation, the workaround is to wrap your generics in value classes:
+
+```kotlin
+class Container<T>(val value: T)
+
+@JvmInline
+value class IntContainer(val value: Container<Int>)
+
+@JvmInline
+value class StringContainer(val value: Container<String>)
+
+Di.appScope {
+    register { IntContainer(Container(42)) }
+    register { StringContainer(Container("hello")) }
+}
+
+Di.get<IntContainer>().value // Container<Int>(42) instance created
+Di.get<StringContainer>().value // Container<String>("hello") instance created
+```
+
+The same applies for `List<T>`, `Set<T>`, `Map<K, V>` and any generic class.
+The fix is to wrap it in some value class and register + inject the value class wrapper.
 
 ### Thread-safety
 
-The Ivy DI APIs aren't synchronized and thread-safety is a **responsibility of the API user**. We made this decision to keep the DI container free of Java (or 3rd party) dependencies and prioritize efficiency. We recommend registering your dependencies on the main thread.
+The Ivy DI APIs aren't synchronized and thread-safety is a **responsibility of the API user**. We made this decision to
+keep the DI container free of Java (or 3rd party) dependencies and prioritize efficiency. We recommend registering your
+dependencies on the main thread.
 
 ### Maintenance
 
