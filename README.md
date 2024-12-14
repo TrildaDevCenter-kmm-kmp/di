@@ -16,11 +16,11 @@ class RemoteArticlesDataSource(val client: HttpClient, val baseUrl: BaseUrlProvi
 class ArticlesRepository(val source: ArticlesDataSource)
 
 Di.appScope {
-    register { BaseUrlProvider("https://ivy-apps.com") }
-    singleton { HttpClient(CIO) }
-    autoWire(::RemoteArticlesDataSource)
-    bind<ArticlesDataSource, RemoteArticlesDataSource>()
-    autoWireSingleton(::ArticlesRepository)
+  register { BaseUrlProvider("https://ivy-apps.com") }
+  singleton { HttpClient(CIO) }
+  autoWire(::RemoteArticlesDataSource)
+  bind<ArticlesDataSource, RemoteArticlesDataSource>()
+  autoWireSingleton(::ArticlesRepository)
 }
 
 val repo = Di.get<ArticlesRepository>() // ArticlesRepository instance created
@@ -72,8 +72,8 @@ class A
 class B(val a: A)
 
 Di.appScope {
-    register { A() }
-    register { B(a = Di.get()) }
+  register { A() }
+  register { B(a = Di.get()) }
 }
 ```
 
@@ -93,15 +93,15 @@ Each call to `Di.get()` creates a **new** instance for non-singleton dependencie
 
 ```kotlin
 class Counter(var x: Int = 0) {
-    init {
-        print("Counter created. ")
-    }
+  init {
+    print("Counter created. ")
+  }
 }
 
 Di.appScope {
-    singleton {
-        Counter() // instance won't be created here 
-    }
+  singleton {
+    Counter() // instance won't be created here 
+  }
 }
 
 println(Di.get<Counter>().x) // Counter created. 0
@@ -150,10 +150,10 @@ interface Platform
 class AndroidPlatform : Platform
 
 Di.appScope {
-    autoWire(::AndroidPlatform)
-    bind<Platform, AndroidPlatform>()
-    // equivalent to:
-    // register<Platform> { AndroidPlatform() }
+  autoWire(::AndroidPlatform)
+  bind<Platform, AndroidPlatform>()
+  // equivalent to:
+  // register<Platform> { AndroidPlatform() }
 }
 Di.get<Platform>() // AndroidPlatform instance
 ```
@@ -169,10 +169,10 @@ class H24TimeFormatter : TimeFormatter
 class AmPmTimeFormatter : TimeFormatter
 
 Di.appScope {
-    autoWire(::H24TimeFormatter)
-    autoWire(::AmPmTimeFormatter)
-    bind<TimeFormatter, H24TimeFormatter>() // default
-    bind<TimeFormatter, AmPmTimeFormatter>(named = "am-pm")
+  autoWire(::H24TimeFormatter)
+  autoWire(::AmPmTimeFormatter)
+  bind<TimeFormatter, H24TimeFormatter>() // default
+  bind<TimeFormatter, AmPmTimeFormatter>(named = "am-pm")
 }
 
 Di.get<TimeFormatter>() // H24TimeFormatter
@@ -190,26 +190,26 @@ To achieve this in Ivy DI, we can set qualifiers using `named = "something"` (yo
 
 ```kotlin
 object DataModule : Di.Module {
-    override fun init() = Di.appScope {
-        singleton { HttpClient(CIO) }
-        register { Json() }
-        autoWire(::LoginService)
-        autoWireSingleton(::AnalyticsService)
-    }
+  override fun init() = Di.appScope {
+    singleton { HttpClient(CIO) }
+    register { Json() }
+    autoWire(::LoginService)
+    autoWireSingleton(::AnalyticsService)
+  }
 }
 
 object DomainModel : Di.Module {
-    override fun init() = Di.app {
-        autoWire(::LoginUseCaseImpl)
-        bind<LoginUseCase, LoginUseCaseImpl>()
-        autoWireSingleton(::SessionManager)
-    }
+  override fun init() = Di.app {
+    autoWire(::LoginUseCaseImpl)
+    bind<LoginUseCase, LoginUseCaseImpl>()
+    autoWireSingleton(::SessionManager)
+  }
 }
 
 Di.init(
-    // Registers the following modules in the DI container
-    DataModule,
-    DomainModule
+  // Registers the following modules in the DI container
+  DataModule,
+  DomainModule
 )
 Di.get<LoginUseCase>() // instance of LoginUseCaseImpl created
 ```
@@ -238,24 +238,24 @@ val UserScope = Di.newScope("user")
 fun Di.userScope(block: Di.Scope.() -> Unit) = Di.inScope(UserScope, block) // helper function (optional)
 
 suspend fun login() {
-    val userInfo = loginInternally() // UserInfo("1", "John")
-    Di.userScope {
-        // Register dependencies for the lifecycle of a user
-        singleton { userInfo }
-    }
+  val userInfo = loginInternally() // UserInfo("1", "John")
+  Di.userScope {
+    // Register dependencies for the lifecycle of a user
+    singleton { userInfo }
+  }
 }
 
 // Note: This function must be called only for logged-in users, otherwise Di.get() will throw an exception.
 suspend fun dashboard() {
-    // Use user related dependencies
-    val userInfo = Di.get<UserInfo>()
-    println("Hello, ${userInfo.name}") // "Hello, John"
+  // Use user related dependencies
+  val userInfo = Di.get<UserInfo>()
+  println("Hello, ${userInfo.name}") // "Hello, John"
 }
 
 suspend fun logout() {
-    logoutInternally()
-    // Frees all dependencies in UserScope
-    Di.clear(UserScope) // UserInfo("1", "John") gets cleared
+  logoutInternally()
+  // Frees all dependencies in UserScope
+  Di.clear(UserScope) // UserInfo("1", "John") gets cleared
 }
 ```
 
@@ -265,12 +265,12 @@ and picking the most appropriate one based on the scope using **affinity**.
 ```kotlin
 data class Screen(val name: String)
 Di.appScope {
-    register<String> { "Hello from app!" }
-    autoWire(::Screen)
+  register<String> { "Hello from app!" }
+  autoWire(::Screen)
 }
 Di.featureScope {
-    register<String> { "Hello from feature!" }
-    autoWire(::Screen)
+  register<String> { "Hello from feature!" }
+  autoWire(::Screen)
 }
 
 Di.get<String>(affinity = AppScope) // "Hello from app!"
@@ -295,19 +295,19 @@ You can do that by wrapping your dependency in `Lazy<T>` and using `Di.getLazy<T
 
 ```kotlin
 class ArticlesDataSource(val client: Lazy<HttpClient>) {
-    suspend fun fetchLatest(): List<Article> = client.value.get("url") // .value gets an instance of the HttpClient
+  suspend fun fetchLatest(): List<Article> = client.value.get("url") // .value gets an instance of the HttpClient
 }
 class ArticlesRepository(val source: ArticlesDataSource) {
-    suspend fun fetchLatest(): List<Article> = source.fetchLatest()
+  suspend fun fetchLatest(): List<Article> = source.fetchLatest()
 }
 
 Di.appScope {
-    singleton { HttpClient(CIO) }
-    register {
-        // autoWire won't work because you need to explicitly call Di.getLazy() instead of Di.get()
-        ArticlesDataSource(Di.getLazy())
-    }
-    autoWire(::ArticlesRepository)
+  singleton { HttpClient(CIO) }
+  register {
+    // autoWire won't work because you need to explicitly call Di.getLazy() instead of Di.get()
+    ArticlesDataSource(Di.getLazy())
+  }
+  autoWire(::ArticlesRepository)
 }
 val repo = Di.get<ArticlesRepository>() // HttpClient instance not created
 repo.fetchLatest() // HttpClient instance created
@@ -328,11 +328,11 @@ For example:
 class Container<T>(val value: T)
 
 Di.appScope {
-    register {
-        // perceived as Container<*>, information for the Int generic type is lost
-        Container<Int>(42)
-    }
-    register { Container<String>("hello") } // will override the factory for Container<Int>
+  register {
+    // perceived as Container<*>, information for the Int generic type is lost
+    Container<Int>(42)
+  }
+  register { Container<String>("hello") } // will override the factory for Container<Int>
 }
 
 val intContainer = Di.get<Container<Int>>() // Container<String>("hello") instance created.
@@ -355,8 +355,8 @@ value class IntContainer(val value: Container<Int>)
 value class StringContainer(val value: Container<String>)
 
 Di.appScope {
-    register { IntContainer(Container(42)) }
-    register { StringContainer(Container("hello")) }
+  register { IntContainer(Container(42)) }
+  register { StringContainer(Container("hello")) }
 }
 
 Di.get<IntContainer>().value // Container<Int>(42) instance created
