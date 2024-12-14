@@ -30,7 +30,7 @@ val repo = Di.get<ArticlesRepository>() // ArticlesRepository instance created
 
 - [Lightweight](di/src/commonMain/kotlin/ivy/di/DiContainer.kt)
 - [One-line setup](https://github.com/Ivy-Apps/di?tab=readme-ov-file#0-setup)
-- [Easy to use?](https://github.com/Ivy-Apps/di?tab=readme-ov-file#1-register-a-dependency)
+- [Simple and easy to use](https://github.com/Ivy-Apps/di?tab=readme-ov-file#1-register-a-dependency)
 - [Auto-wiring](https://github.com/Ivy-Apps/di?tab=readme-ov-file#4-auto-wiring)
 - [Singletons](https://github.com/Ivy-Apps/di?tab=readme-ov-file#3-singleton-dependencies)
 - [Bindings](https://github.com/Ivy-Apps/di?tab=readme-ov-file#5-bindings)
