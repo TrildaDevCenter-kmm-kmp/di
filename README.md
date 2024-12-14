@@ -18,15 +18,20 @@ class RemoteArticlesDataSource(
 ) : ArticlesDataSource
 class ArticlesRepository(val source: ArticlesDataSource)
 
-Di.appScope {
-  register { BaseUrlProvider("https://ivy-apps.com") }
-  singleton { HttpClient(CIO) }
-  autoWire(::RemoteArticlesDataSource)
-  bind<ArticlesDataSource, RemoteArticlesDataSource>()
-  autoWireSingleton(::ArticlesRepository)
+object AppModule : Di.Module {
+  override fun init() = Di.appScope {
+    register { BaseUrlProvider("https://ivy-apps.com") }
+    singleton { HttpClient(CIO) }
+    autoWire(::RemoteArticlesDataSource)
+    bind<ArticlesDataSource, RemoteArticlesDataSource>()
+    autoWireSingleton(::ArticlesRepository)
+  }
 }
 
-val repo = Di.get<ArticlesRepository>() // ArticlesRepository instance created
+fun main() {
+  Di.init(AppModule) // activates the AppModule (i.e. executes its code)
+  val repo = Di.get<ArticlesRepository>() // ArticlesRepository instance created
+}
 ```
 
 ### Features
