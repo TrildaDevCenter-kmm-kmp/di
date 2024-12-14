@@ -121,24 +121,26 @@ For example, to clear the counter - `Di.clear(AppScope)`.
 class A
 class B(val a: A)
 class C(val a: A, val b: B)
+class D(val a: A, val b: B, val c: C)
 
 Di.appScope {
-    autoWire(::A)
-    autoWireSingleton(::B) // for singletons
-    autoWire(::C)
+  autoWire(::A)
+  autoWireSingleton(::B) // for singletons
+  autoWire(::C)
+  autoWire(::D)
 }
-Di.get<C>() // instance of C created
+Di.get<D>() // instance of D created
 ```
 
-To avoid repetitive code like `register { C(Di.get(), Di.get()) }`
+To avoid repetitive code like `register { D(Di.get(), Di.get(), Di.get()) }`
 it's recommended to use auto-wiring.
 
-> ![TIP]
+> [!TIP]
 > **Always auto-wire**
+> 
 > When possible always use auto-wiring and fallback to
 > register/singleton only when absolutely necessary.
->
-> This way you won't have to modify the register factories
+> This way you won't have to modify the registered factories
 > when you change the constructor of the dependency that's being auto-wired.
 
 ### 5. Bindings
