@@ -239,7 +239,7 @@ Di.get<String>(affinity = FeatureScope) // "Hello from feature!"
 Di.get<Screen>(affinity = FeatureScope) // Screen(name="Hello from feature!")
 ```
 
-### 2. Multibindings 🚧
+### 2. Multi-bindings 🚧
 
 Currently not supported, investigating this use-case and whether we can support it nicely.
 
