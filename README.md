@@ -41,11 +41,13 @@ val repo = Di.get<ArticlesRepository>() // ArticlesRepository instance created
 
 ### 0. Setup
 
-You can find Ivy DI in our [Maven Central repository](https://central.sonatype.com/artifact/com.ivy-apps/di).
+You can find Ivy DI in [our Ivy DI Maven Central repository](https://central.sonatype.com/artifact/com.ivy-apps/di).
+
+Replace "?.?.?" with: [![Maven Central Version](https://img.shields.io/maven-central/v/com.ivy-apps/di)](https://central.sonatype.com/artifact/com.ivy-apps/di)
 
 **Gradle (Kotlin)**
 ```gradle
-implementation("com.ivy-apps:di:0.0.0")
+implementation("com.ivy-apps:di:?.?.?")
 ```
 
 or
@@ -53,10 +55,8 @@ or
 **Version Catalog**
 ```toml
 [libraries]
-ivyApps-di = { module = "com.ivy-apps:di", version = "0.0.0" }
+ivyApps-di = { module = "com.ivy-apps:di", version = "?.?.?" }
 ```
-
-Replace "0.0.0" with: [![Maven Central Version](https://img.shields.io/maven-central/v/com.ivy-apps/di)](https://central.sonatype.com/artifact/com.ivy-apps/di)
 
 That's all you need! Now let's start using Ivy DI ⚡
 
