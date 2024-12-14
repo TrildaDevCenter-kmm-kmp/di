@@ -28,7 +28,7 @@ val repo = Di.get<ArticlesRepository>() // ArticlesRepository instance created
 
 ### Features
 
-- [Lightweight](di/src/commonMain/kotlin/ivy/di/DiContainer.kt)
+- [Lightweight & Efficient](di/src/commonMain/kotlin/ivy/di/DiContainer.kt)
 - [One-line setup](https://github.com/Ivy-Apps/di?tab=readme-ov-file#0-setup)
 - [Simple and easy to use](https://github.com/Ivy-Apps/di?tab=readme-ov-file#1-register-a-dependency)
 - [Auto-wiring](https://github.com/Ivy-Apps/di?tab=readme-ov-file#4-auto-wiring)
@@ -66,7 +66,7 @@ or
 ivyApps-di = { module = "com.ivy-apps:di", version = "?.?.?" }
 ```
 
-That's all you need! Now let's start using Ivy DI ⚡
+That's all you need! Now let's start using Ivy DI ✨️
 
 ### 1. Register a dependency
 
