@@ -283,6 +283,9 @@ Di.get<String>(affinity = FeatureScope) // "Hello from feature!"
 Di.get<Screen>(affinity = FeatureScope) // Screen(name="Hello from feature!")
 ```
 
+> [!NOTE]
+> Auto-wiring automatically sets the affinity to the scope from which it's called.
+
 ### 2. Multi-bindings 🚧
 
 Currently not supported, investigating this use-case and whether we can support it nicely.
