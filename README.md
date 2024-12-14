@@ -228,7 +228,7 @@ To activate the DI module you need to call `Di.init(MyModule)`.
 ### 1. Scopes
 
 Ivy DI supports grouping your dependencies into scopes. This way you can manage their lifecycle
-and free resources as soon as they are no longer needed. **AppScope** and **FeatureScope**
+and free resources when they are no longer needed. **AppScope** and **FeatureScope**
 are built-in, but you can easily define your own scopes using `Di.newScope("my-scope")`.
 
 ```kotlin
