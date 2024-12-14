@@ -39,6 +39,9 @@ val repo = Di.get<ArticlesRepository>() // ArticlesRepository instance created
 - [Scopes](https://github.com/Ivy-Apps/di?tab=readme-ov-file#1-scopes)
 - [Lazy intitliazation](https://github.com/Ivy-Apps/di?tab=readme-ov-file#3-lazy-initialization)
 
+> [!WARNING]
+> Before deciding whether to use it, make sure to check the [Limitations](https://github.com/Ivy-Apps/di?tab=readme-ov-file#%EF%B8%8F-limitations).
+
 ## Usage
 
 ### 0. Setup
@@ -141,7 +144,7 @@ it's recommended to use auto-wiring.
 > When possible always use auto-wiring and fallback to
 > register/singleton only when absolutely necessary.
 > This way you won't have to modify the registered factories
-> when you change the constructor of the dependency that's being auto-wired.
+> when you change the constructor of the dependency that's being injected.
 
 ### 5. Bindings
 
