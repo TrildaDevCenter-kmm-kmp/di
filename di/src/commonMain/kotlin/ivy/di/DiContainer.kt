@@ -261,6 +261,10 @@ object Di {
     }
 }
 
+/**
+ * Same as [Di.get] but with affinity set to the receiver [Di.Scope] - [this].
+ * Read **[Di.get]**.
+ */
 inline fun <reified T : Any> Scope.get(
     named: Any? = null,
 ): T = Di.get(named, this)
