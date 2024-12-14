@@ -74,6 +74,10 @@ or
 ivyApps-di = { module = "com.ivy-apps:di", version = "?.?.?" }
 ```
 
+```gradle
+implementation(libs.ivyApps.di)
+```
+
 That's all you need! Now let's start using Ivy DI ✨️
 
 ### 1. Register a dependency
