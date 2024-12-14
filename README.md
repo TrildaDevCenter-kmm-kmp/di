@@ -189,13 +189,13 @@ To re-use and encapsulate DI logic you can create `Di.Module`s that you can late
 
 Ivy DI supports grouping your dependencies into scopes. This way you can manage their lifecycle
 and free resources as soon as they are no longer needed. **AppScope** and **FeatureScope**
-are built-in but you can easily define your own scopes using `Di.newScope("my-scope")`.
+are built-in, but you can easily define your own scopes using `Di.newScope("my-scope")`.
 
 ```kotlin
-data class UserInfo(val id: String, name: String)
+data class UserInfo(val id: String, val name: String)
 
 val UserScope = Di.newScope("user")
-fun Di.userScope(block: Di.Scope.() -> Unit) = Di.scope(UserScope, block) // helper function (optional)
+fun Di.userScope(block: Di.Scope.() -> Unit) = Di.inScope(UserScope, block) // helper function (optional)
 
 suspend fun login() {
   val userInfo = loginInternally() // UserInfo("1", "John")
@@ -219,9 +219,32 @@ suspend fun logout() {
 }
 ```
 
+Scopes are also extremely useful for defining multiple dependencies of the same type
+and picking the most appropriate one based on the scope using **affinity**.
+
+```kotlin
+data class Screen(val name: String)
+Di.appScope {
+    register<String> { "Hello from app!" }
+    autoWire(::Screen)
+}
+Di.featureScope {
+    register<String> { "Hello from feature!" }
+    autoWire(::Screen)
+}
+
+Di.get<String>(affinity = AppScope) // "Hello from app!"
+Di.get<Screen>(affinity = AppScope) // Screen(name="Hello from app!")
+Di.get<String>(affinity = FeatureScope) // "Hello from feature!"
+Di.get<Screen>(affinity = FeatureScope) // Screen(name="Hello from feature!")
+```
+
 ### 2. Multibindings 🚧
 
 Currently not supported, investigating this use-case and whether we can support it nicely.
+
+> [!WARNING]
+> So far, we haven't found a nice and efficient solution.
 
 ### 3. Lazy initialization
 
