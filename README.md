@@ -322,7 +322,7 @@ The instance of `HttpClient` will be created only after the `ArticlesDataSource#
 To avoid performance and compatibility problems we limit reflection to the bare minimum.
 Ivy DI uses only `KClass<*>` which unfortunately doesn't make a difference between the generic type of the class.
 
-For example:
+**Problematic code:**
 
 ```kotlin
 class Container<T>(val value: T)
@@ -341,9 +341,11 @@ val x = intContainer.value + 1 // ClassCastException: class java.lang.String can
 Di.get<Container<String>>() // Container<String>("hello") instance created
 ```
 
-This is very weird and have some nasty implications that break type-safety.
+This is very weird and has some nasty implications that break type-safety.
 
-To overcome this `KClass` limitation, the workaround is to wrap your generics in value classes:
+To overcome this `KClass` limitation, the workaround is to wrap your generics in value classes.
+
+**Workaround:**
 
 ```kotlin
 class Container<T>(val value: T)
