@@ -198,15 +198,24 @@ object DataModule : Di.Module {
     }
 }
 
+object DomainModel : Di.Module {
+    override fun init() = Di.app {
+        autoWire(::LoginUseCaseImpl)
+        bind<LoginUseCase, LoginUseCaseImpl>()
+        autoWireSingleton(::SessionManager)
+    }
+}
+
 Di.init(
     // Registers the following modules in the DI container
-    AppModule,
     DataModule,
+    DomainModule
 )
-Di.get<LoginService>()
+Di.get<LoginUseCase>() // instance of LoginUseCaseImpl created
 ```
 
-To re-use and encapsulate DI logic you can create `Di.Module`s that you can later activate via `Di.init(MyModule)`.
+To encapsulate and re-use DI logic you can create `Di.Module`.
+To activate the DI module you need to call `Di.init(MyModule)`.
 
 ## Advanced Usage
 
