@@ -48,8 +48,8 @@ val repo = Di.get<ArticlesRepository>() // ArticlesRepository instance created
 
 You can find Ivy DI in [our Ivy DI Maven Central repository](https://central.sonatype.com/artifact/com.ivy-apps/di).
 
-Replace "?.?.?"
-with: [![Maven Central Version](https://img.shields.io/maven-central/v/com.ivy-apps/di)](https://central.sonatype.com/artifact/com.ivy-apps/di)
+Replace `?.?.?`
+with the numbers from: [![Maven Central Version](https://img.shields.io/maven-central/v/com.ivy-apps/di)](https://central.sonatype.com/artifact/com.ivy-apps/di)
 
 **Gradle (Kotlin)**
 
