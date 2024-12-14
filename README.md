@@ -46,6 +46,7 @@ fun main() {
 - [Modules](https://github.com/Ivy-Apps/di?tab=readme-ov-file#7-modules)
 - [Scopes](https://github.com/Ivy-Apps/di?tab=readme-ov-file#1-scopes)
 - [Lazy intitliazation](https://github.com/Ivy-Apps/di?tab=readme-ov-file#3-lazy-initialization)
+- [KDoc on every method](di/src/commonMain/kotlin/ivy/di/DiContainer.kt)
 
 > [!WARNING]
 > Before deciding whether to use it, make sure to check the [Limitations](https://github.com/Ivy-Apps/di?tab=readme-ov-file#%EF%B8%8F-limitations).
