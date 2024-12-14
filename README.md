@@ -285,7 +285,7 @@ Currently not supported, investigating this use-case and whether we can support 
 
 > [!WARNING]
 > So far, we haven't found a nice and efficient solution.
-> Currently, multi-bindings are not on the roadmap.
+> Currently, multi-bindings are not on the roadmap. The main blocker is the limited KClass<*> support for generics.
 
 ### 3. Lazy initialization
 
