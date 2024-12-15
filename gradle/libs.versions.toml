@@ -6,12 +6,14 @@ android-minSdk = "24"
 android-compileSdk = "34"
 kotest = "5.9.1"
 kotlin-benchmark = "0.4.13"
+kodein = "7.23.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotlin-benchmark = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlin-benchmark" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+kodein = { module = "org.kodein.di:kodein-di", version.ref = "kodein" }
 
 [bundles]
 test = [

@@ -12,9 +12,6 @@ object AndroidGraphIvyDi : Di.Module {
   override fun init() = Di.appScope {
     autoWireSingleton(::Context)
 
-    autoWire(::RealDispatchersProvider)
-    bind<DispatchersProvider, RealDispatchersProvider>()
-
     autoWire(::LocalStorage)
 
     singleton { Backstack("/") }

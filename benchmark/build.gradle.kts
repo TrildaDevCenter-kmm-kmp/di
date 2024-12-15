@@ -35,4 +35,5 @@ dependencies {
   implementation(libs.kotlin.benchmark)
   implementation(project(":di"))
   implementation(libs.koin.core)
+  implementation(libs.kodein)
 }

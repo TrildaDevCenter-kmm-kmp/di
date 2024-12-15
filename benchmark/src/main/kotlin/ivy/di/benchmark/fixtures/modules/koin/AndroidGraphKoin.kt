@@ -9,8 +9,6 @@ import org.koin.dsl.module
 val AndroidGraphKoin = module {
   singleOf(::Context)
 
-  factoryOf(::RealDispatchersProvider) { bind<DispatchersProvider>() }
-
   factoryOf(::LocalStorage)
 
   single { Backstack("/") }
