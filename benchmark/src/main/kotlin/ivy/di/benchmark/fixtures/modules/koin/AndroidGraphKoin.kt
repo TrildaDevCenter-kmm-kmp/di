@@ -1,18 +1,16 @@
-package ivy.di.benchmark.fixtures.android
+package ivy.di.benchmark.fixtures.modules.koin
 
+import ivy.di.benchmark.fixtures.*
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val AndroidCommonModuleKoin = module {
+val AndroidGraphKoin = module {
   singleOf(::Context)
 
-  factoryOf(::AndroidDispatchersProvider) { bind<DispatchersProvider>() }
+  factoryOf(::RealDispatchersProvider) { bind<DispatchersProvider>() }
 
-  factoryOf(::AndroidLogger) { bind<Logger>() }
-
-  single { HttpClient() }
   factoryOf(::LocalStorage)
 
   single { Backstack("/") }
@@ -42,6 +40,4 @@ val AndroidCommonModuleKoin = module {
   singleOf(::AuthorScreen)
 
   factoryOf(::App)
-  singleOf(::AppHolder)
-  factoryOf(::AppAppHolder)
 }
