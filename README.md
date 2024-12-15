@@ -1,6 +1,7 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Maven Central Version](https://img.shields.io/maven-central/v/com.ivy-apps/di?color=5C3DF5)](https://central.sonatype.com/artifact/com.ivy-apps/di)
 [![CI](https://github.com/Ivy-Apps/di/actions/workflows/ci.yml/badge.svg)](https://github.com/Ivy-Apps/di/actions/workflows/ci.yml)
+[![Publish](https://github.com/Ivy-Apps/di/actions/workflows/publish.yml/badge.svg)](https://github.com/Ivy-Apps/di/actions/workflows/publish.yml)
 
 # Ivy DI ⚡
 
