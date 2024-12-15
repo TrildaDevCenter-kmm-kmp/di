@@ -51,6 +51,19 @@ fun main() {
 > [!WARNING]
 > Before deciding whether to use it, make sure to check the [Limitations](https://github.com/Ivy-Apps/di?tab=readme-ov-file#%EF%B8%8F-limitations).
 
+## Benchmarks
+
+Based on [this Benchmark test](https://github.com/Ivy-Apps/di/blob/c35b864f0a8bc94b87f60ebbc58c1eed837d7a09/benchmark/src/main/kotlin/ivy/di/benchmark/DiBenchmark.kt) from [this CI run](https://github.com/Ivy-Apps/di/actions/runs/12339164458/job/34435040689) Ivy DI performs better than [Koin](https://github.com/InsertKoinIO/koin)
+and [Kodein](https://github.com/kosi-libs/Kodein) on the "medium" and "complex" DI graphs test cases.
+
+| **Library** | **Startup**   | **Small graph**     | **Medium graph**     | **Complex graph**     |
+|-------------|---------------|--------------------|---------------------|----------------------|
+| **Ivy DI**  | ≈ 10⁻⁵ ms     | 0.058 ± 0.001 ms   | 0.204 ± 0.001 ms    | 1.079 ± 0.004 ms     |
+| **Koin**    | ≈ 10⁻³ ms     | 0.061 ± 0.001 ms   | 0.554 ± 0.003 ms    | 3.522 ± 0.018 ms     |
+| **Kodein**  | ≈ 10⁻⁴ ms     | 0.051 ± 0.001 ms   | 0.436 ± 0.002 ms    | 3.725 ± 0.041 ms     |
+
+We encourage developers to [review the benchmark setup](https://github.com/Ivy-Apps/di/blob/c35b864f0a8bc94b87f60ebbc58c1eed837d7a09/benchmark/src/main/kotlin/ivy/di/benchmark/DiBenchmark.kt) and propose improvements. PRs that make the benchmarks fairer and more comprehensive are more than welcome!
+
 ## Usage
 
 ### 0. Setup
