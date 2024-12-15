@@ -1,5 +1,6 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Maven Central Version](https://img.shields.io/maven-central/v/com.ivy-apps/di)](https://central.sonatype.com/artifact/com.ivy-apps/di)
+[![Maven Central Version](https://img.shields.io/maven-central/v/com.ivy-apps/di?color=5C3DF5)](https://central.sonatype.com/artifact/com.ivy-apps/di)
+[![CI](https://github.com/Ivy-Apps/di/actions/workflows/ci.yml/badge.svg)](https://github.com/Ivy-Apps/di/actions/workflows/ci.yml)
 
 # Ivy DI ⚡
 
@@ -71,7 +72,7 @@ We encourage developers to [review the benchmark setup](https://github.com/Ivy-A
 You can find Ivy DI in [our Ivy DI Maven Central repository](https://central.sonatype.com/artifact/com.ivy-apps/di).
 
 Replace `?.?.?`
-with the numbers from: [![Maven Central Version](https://img.shields.io/maven-central/v/com.ivy-apps/di)](https://central.sonatype.com/artifact/com.ivy-apps/di)
+with the numbers from: [![Maven Central Version](https://img.shields.io/maven-central/v/com.ivy-apps/di?color=5C3DF5)](https://central.sonatype.com/artifact/com.ivy-apps/di)
 
 **Gradle (Kotlin)**
 
