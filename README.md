@@ -3,6 +3,9 @@
 [![CI](https://github.com/Ivy-Apps/di/actions/workflows/ci.yml/badge.svg)](https://github.com/Ivy-Apps/di/actions/workflows/ci.yml)
 [![Publish](https://github.com/Ivy-Apps/di/actions/workflows/publish.yml/badge.svg)](https://github.com/Ivy-Apps/di/actions/workflows/publish.yml)
 
+[![Kotlin Multiplatform](https://img.shields.io/badge/Kotlin-Multiplatform-blue?logo=kotlin&style=flat)](https://central.sonatype.com/artifact/com.ivy-apps/di)
+[![Platforms](https://img.shields.io/badge/platforms-JVM%20|%20Android%20|%20iOS%20|%20Native%20|%20JS%20|%20WASM-brightgreen)](https://central.sonatype.com/artifact/com.ivy-apps/di)
+
 # Ivy DI ⚡
 
 A simple and lightweight runtime Dependency Injection (DI) container for Kotlin Multiplatform.
