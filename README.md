@@ -426,3 +426,12 @@ Use it at your own risk. The authors are not liable for
 any issues, defects, security vulnerabilities,
 or damages arising from its use.
 Maintenance, updates, and support are not guaranteed._
+
+## Featured Projects 🚀
+
+Kotlin Multiplatform projects that are using Ivy DI:
+
+### [Ivy Learn (ivylearn.app)](https://github.com/Ivy-Apps/learn)
+
+
+
