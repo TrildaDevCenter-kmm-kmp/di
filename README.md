@@ -430,6 +430,10 @@ any issues, defects, security vulnerabilities,
 or damages arising from its use.
 Maintenance, updates, and support are not guaranteed._
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Ivy-Apps/di&type=Date)](https://star-history.com/#Ivy-Apps/di&Date)
+
 ## Featured Projects 🚀
 
 Kotlin Multiplatform projects that are using Ivy DI:
